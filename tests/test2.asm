@@ -1,0 +1,15 @@
+LOC 10
+Data 5
+Data 15
+Data 20
+Data End
+Data 0
+
+LDR 0,0,10
+LDA 1,0,11
+LDX 2,12
+STR 1,0,12
+HLT
+
+LOC 1024
+End: HLT

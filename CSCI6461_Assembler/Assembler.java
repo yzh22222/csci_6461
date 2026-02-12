@@ -20,16 +20,12 @@ public class Assembler {
         PrintWriter listing = new PrintWriter(new FileWriter(listingFile));
         PrintWriter load = new PrintWriter(new FileWriter(LoadFile));
 
-        int loc = 0;
-
         for (Instruction instr : instructions){
             String octal = converter.convertToOctal(instr);
-            String locOct = String.format("%06o",loc);
+            String locOct = String.format("%06o",instr.location);
 
             listing.println(locOct + " " + octal + " " + instr.ins);  //listing file
             load.println(locOct + " " + octal);     //load file
-
-            loc++;
         }
 
         listing.close();

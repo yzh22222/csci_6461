@@ -23,7 +23,7 @@ public class Parser {
         //Pass 1: Process the line, if it is a label, add the label to a dictionary with the code location. Process
         //the rest of the line (it could be blank, if so no code is generated). Check for errors in the
         //code. 
-        int cou = 0;    //counter
+        int cou = 0;    // location counter
         BufferedReader reader  = new BufferedReader(new FileReader(filename));
         String line;
 
@@ -31,23 +31,28 @@ public class Parser {
             line = cleanLine(line);
             if (line.isEmpty()) continue;
 
+            // Normalize for safety
+            String upperLine = line.toUpperCase();
+
+            // Handle LOC FIRST
+            if (upperLine.startsWith("LOC")) {
+                String[] parts = line.split("\\s+");
+                if (parts.length >= 2) {
+                    cou = Integer.parseInt(parts[1]);  // decimal
+                }
+                continue;
+            }
+
             // Handle label
             if (line.contains(":")){
                 String[] parts = line.split(":", 2);
                 String label = parts[0].trim();
-                lt.addLabel(label,cou);
+                lt.addLabel(label, cou);
                 line = parts[1].trim();
                 if(line.isEmpty()) continue;
-
             }
 
-            // Handle LOC
-            if (line.startsWith("LOC")) {
-                String[] parts = line.split("\\s+");
-                cou = Integer.parseInt(parts[1]);
-                continue;
-            }
-            //increment
+            // Increment only if actual instruction/data
             cou++;
         }
 
@@ -74,10 +79,12 @@ public class Parser {
         }
 
         // Handle LOC
-        if (line.startsWith("LOC")) {
+        if (line.toUpperCase().startsWith("LOC")) {
             String[] parts = line.split("\\s+");
-            cou = Integer.parseInt(parts[1]);
-            continue;
+            if (parts.length >= 2) {
+                cou = Integer.parseInt(parts[1]);  // decimal
+            }
+            continue;   // do NOT generate instruction
         }
 
         Instruction instr = new Instruction(ol);
@@ -148,7 +155,7 @@ public class Parser {
             }
         }
 
-
+        instr.location = cou;
         instructions.add(instr);
         cou++;
     }

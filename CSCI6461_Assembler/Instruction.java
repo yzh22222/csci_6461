@@ -10,6 +10,7 @@ public class Instruction {
     public String ins;  //instructions
     public String octal;
     public boolean isData;
+    public int location;
 
     public Instruction(String l){
         this.ins = l;
